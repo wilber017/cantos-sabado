@@ -1,0 +1,163 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <title>Cifras Canto Catequese — PDF + Áudio + Playlists</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div class="app">
+  <header>
+    <h1>Cifras Canto Catequese</h1>
+    <p class="subtitle">PDF da cifra/partitura + Áudio MP3 • Categorias, Tags e Playlists • Offline.</p>
+  </header>
+
+  <nav class="tabs">
+    <button data-tab="library" class="active">Biblioteca</button>
+    <button data-tab="create">Nova Música</button>
+    <button data-tab="playlists">Playlists</button>
+    <button data-tab="manage">Categorias/Backup</button>
+  </nav>
+
+  <main>
+     <!-- Biblioteca -->
+    <section id="tab-library" class="tab active">
+      <div class="card">
+        <div class="filters">
+          <input id="search" placeholder="Buscar por título, artista ou tag...">
+          <select id="categoryFilter"><option value="">Todas as categorias</option></select>
+        </div>
+        <div id="tagChips" class="chips"></div>
+        <ul id="songList" class="list"></ul>
+      </div>
+    </section>
+
+    <!-- Nova música -->
+    <section id="tab-create" class="tab">
+      <div class="card">
+        <div class="grid grid-2">
+          <label>Título
+            <input id="title" required>
+          </label>
+          <label>Artista
+            <input id="artist">
+          </label>
+        </div>
+
+        <div class="grid grid-2">
+          <label>Categoria
+            <select id="category"></select>
+          </label>
+          <label>Tags (separe por vírgula)
+            <input id="tags" placeholder="louvor, missa, entrada...">
+          </label>
+        </div>
+
+        <div class="grid grid-2">
+          <label>Documento PDF da cifra/partitura
+            <input id="pdfInput" type="file" accept="application/pdf">
+          </label>
+          <label>Áudio (MP3/WAV/OGG)
+            <input id="audioInput" type="file" accept="audio/*">
+          </label>
+        </div>
+        <div class="pdfhint">O PDF e o áudio ficam guardados no navegador (IndexedDB). Arquivos grandes ocupam mais espaço.</div>
+
+        <div class="actions">
+          <button class="btn-primary" id="saveSong">Salvar</button>
+          <button id="clearForm">Limpar</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- Playlists -->
+    <section id="tab-playlists" class="tab">
+      <div class="card">
+        <h3>Playlists</h3>
+        <div class="actions-row" style="margin-bottom:8px">
+          <input id="newPlaylistName" placeholder="Nome da nova playlist..." style="max-width:360px">
+          <button class="inline btn-primary" id="btnCreatePlaylist">Criar</button>
+        </div>
+
+        <div id="playlistList" class="list"></div>
+      </div>
+    </section>
+
+    <!-- Gerenciar -->
+    <section id="tab-manage" class="tab">
+      <div class="card">
+        <h3>Categorias</h3>
+        <div class="actions" style="margin-top:0">
+          <input id="newCategory" placeholder="Nova categoria...">
+          <button id="addCategory">Adicionar</button>
+        </div>
+        <ul id="categoryList" class="list" style="margin-top:10px"></ul>
+
+        <hr style="margin:18px 0;border:none;border-top:1px solid var(--line)">
+        <h3>Backup</h3>
+        <div class="actions" style="margin-top:8px">
+          <button id="exportMeta">Exportar (apenas metadados)</button>
+          <button id="exportAll">Exportar (com arquivos)</button>
+          <input id="importFile" type="file" accept="application/json">
+          <button id="importData">Importar</button>
+        </div>
+        <p class="pdfhint">
+          “Com arquivos” gera um JSON grande (inclui PDFs/áudios em base64). Use para migrar de navegador.
+        </p>
+      </div>
+    </section>
+
+    <!-- Modal / Viewer de música -->
+    <div id="modal" class="modal">
+      <div class="content">
+        <button class="close" id="modalClose">×</button>
+        <h2 id="mTitle">Título</h2>
+        <div class="meta" id="mMeta"></div>
+        <div class="tags" id="mTags"></div>
+
+        <div class="viewer" style="margin-top:10px">
+          <div class="row">
+            <div class="pdf" id="pdfViewer">
+              <div class="float-toolbar">
+                <button id="btnFullscreen" class="inline">Tela cheia</button>
+                <button id="btnOpenPDF" class="inline">Abrir em nova aba</button>
+              </div>
+              <!-- iframe do PDF é injetado via JS -->
+            </div>
+            <div class="audio">
+              <audio id="mAudio" controls style="width:100%"></audio>
+              <div class="pdfhint" style="margin-top:6px">
+                <button id="btnDownloadAll" class="inline">Baixar PDF + Áudio</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="actions" style="margin-top:12px">
+          <button id="editSong">Editar</button>
+          <button id="deleteSong" class="btn-danger">Excluir</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Modal seletor de playlist -->
+    <div id="playlistPicker" class="modal">
+      <div class="content">
+        <button class="close" id="pickerClose">×</button>
+        <h3>Adicionar à playlist</h3>
+        <div class="actions-row" style="margin:8px 0 10px 0">
+          <input id="pickerNewName" placeholder="Criar nova playlist..." style="max-width:320px">
+          <button id="pickerCreate" class="inline btn-primary">Criar</button>
+        </div>
+        <div id="pickerList" class="scroll"></div>
+      </div>
+    </div>
+  </main>
+
+  <footer><small>Cifras Canto Catequese – v2.2 • PDF + Áudio + Playlists • Dados locais (IndexedDB).</small></footer>
+</div>
+
+<script src="script.js"></script>
+</body>
+</html>
